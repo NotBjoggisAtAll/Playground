@@ -45,6 +45,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::Jump);
 }
 
+void AMyCharacter::UpdateButtonLocation()
+{}
+
 void AMyCharacter::MoveForward(float value)
 {
 	AddMovementInput(GetActorForwardVector(), MovementSpeed * value);
