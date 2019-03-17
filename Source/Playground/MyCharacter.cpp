@@ -74,7 +74,7 @@ void AMyCharacter::RotateCamera(float value)
 
 void AMyCharacter::StartRecording()
 {
-	if (!bIsRecording && (Ghosts.Num() < MaxNumOfGhosts))
+	if (!bIsRecording)
 	{
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
@@ -93,9 +93,15 @@ void AMyCharacter::StopRecording()
 	{
 		bIsRecording = false;
 		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
-		AGhost* NewGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
+		if (NewGhost)
+		{
+			if (OldGhost)
+				OldGhost->Destroy();
+			OldGhost = NewGhost;
+		}
+		NewGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
 		NewGhost->SetTransform(RecordedTransforms);
-		Ghosts.Add(NewGhost);
+
 		RecordedTransforms.Empty();
 
 	}
@@ -103,9 +109,10 @@ void AMyCharacter::StopRecording()
 
 void AMyCharacter::RemoveGhosts()
 {
-	for (auto& g : Ghosts)
-		g->bAutoDestroyWhenFinished = true; //is this a good way to destroy these? it seems to work
-	Ghosts.Empty();
+	if(OldGhost)
+		OldGhost->Destroy();
+	if(NewGhost)
+		NewGhost->Destroy();
 	UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] RemoveGhosts: Ghosts emptied!"));
 
 }

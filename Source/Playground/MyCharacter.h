@@ -43,10 +43,12 @@ private:
 	void StopRecording();
 	void RemoveGhosts();
 
-	TArray<class AGhost*> Ghosts;
+	class AGhost* NewGhost = nullptr;
+	class AGhost* OldGhost = nullptr;
 	TArray<FTransform> RecordedTransforms;
 	FTimerHandle TH_RecordingTimer;
 	bool bIsRecording = false;
+
 	// ** Values ** //
 	float MovementSpeed = 2;
 	float MaxRecordedTime = 10.f;
