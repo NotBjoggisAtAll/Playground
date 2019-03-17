@@ -33,15 +33,22 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AGhost> GhostClass;
 private:
 	void MoveForward(float value);
 	void MoveRight(float value);
-	void RotateCamera(float value);
+	void RotateCamera(float value); 
+	void StartRecording();
+	void StopRecording();
 
+	TArray<FTransform> RecordedTransforms;
+	FTimerHandle TH_RecordingTimer;
+	bool bIsRecording = false;
 	// ** Values ** //
-
 	float MovementSpeed = 2;
+	float MaxRecordedTime = 10.f;
+
 
 
 };

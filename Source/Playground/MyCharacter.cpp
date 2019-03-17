@@ -4,6 +4,10 @@
 #include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Engine/World.h"
+#include "Public/TimerManager.h"
+
+#include "Ghost.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -31,7 +35,12 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (bIsRecording)
+		RecordedTransforms.Add(GetTransform());
+	//else if (RecordedTransforms.Num() > 0)
+	//	SetActorTransform(RecordedTransforms[0]);
+	//else
+	//{ }
 }
 
 // Called to bind functionality to input
@@ -43,6 +52,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("RotateCamera", this, &AMyCharacter::RotateCamera);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::Jump);
+	PlayerInputComponent->BindAction("StartRecording", IE_Pressed, this, &AMyCharacter::StartRecording);
 }
 
 void AMyCharacter::MoveForward(float value)
@@ -59,5 +69,31 @@ void AMyCharacter::MoveRight(float value)
 void AMyCharacter::RotateCamera(float value)
 {
 	SpringArm->AddRelativeRotation(FRotator(0, value, 0));
+}
+
+void AMyCharacter::StartRecording()
+{
+	if (!bIsRecording)
+	{
+		bIsRecording = true;
+		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
+		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Start Recording: Recording starts!"));
+	}
+	else
+	{
+		StopRecording();
+	}
+}
+
+void AMyCharacter::StopRecording()
+{
+	if (bIsRecording)
+	{
+		bIsRecording = false;
+		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
+		AGhost* NewGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
+		NewGhost->SetTransform(RecordedTransforms);
+		RecordedTransforms.Empty();
+	}
 }
 
