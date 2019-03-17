@@ -8,6 +8,9 @@
 #include "Public/TimerManager.h"
 
 #include "Ghost.h"
+#include "GhostPlayerWidget.h"
+
+
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -15,12 +18,11 @@ AMyCharacter::AMyCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-
 	Camera->SetupAttachment(SpringArm);
 }
 
@@ -28,7 +30,6 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -36,11 +37,16 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (bIsRecording)
+	{
+
 		RecordedTransforms.Add(GetTransform());
-	//else if (RecordedTransforms.Num() > 0)
-	//	SetActorTransform(RecordedTransforms[0]);
-	//else
-	//{ }
+		float UsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(TH_RecordingTimer);
+		if (PlayerWidget)
+		{
+			PlayerWidget->SetProgressBarPercentage(UsedTime/MaxRecordedTime);
+			UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting Progress Bar Percentage!"));
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -56,21 +62,6 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("RemoveGhosts", IE_Pressed, this, &AMyCharacter::RemoveGhosts);
 }
 
-void AMyCharacter::MoveForward(float value)
-{
-	AddMovementInput(GetActorForwardVector(), MovementSpeed * value);
-}
-
-void AMyCharacter::MoveRight(float value)
-{
-	
-	AddControllerYawInput(value);
-}
-
-void AMyCharacter::RotateCamera(float value)
-{
-	SpringArm->AddRelativeRotation(FRotator(0, value, 0));
-}
 
 void AMyCharacter::StartRecording()
 {
@@ -78,7 +69,7 @@ void AMyCharacter::StartRecording()
 	{
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
-		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Start Recording: Recording starts!"));
+		//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Start Recording: Recording starts!"));
 	}
 	else
 	{
@@ -92,28 +83,57 @@ void AMyCharacter::StopRecording()
 	if (bIsRecording)
 	{
 		bIsRecording = false;
-		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
-		if (NewGhost)
+		//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
+		if (NewestGhost)
 		{
-			if (OldGhost)
-				OldGhost->Destroy();
-			OldGhost = NewGhost;
+			if (OldestGhost)
+			{
+				OldestGhost->Destroy();
+
+			}
+			OldestGhost = NewestGhost;
+			PlayerWidget->SetNumberOfGhosts(2);
+
 		}
-		NewGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
-		NewGhost->SetTransform(RecordedTransforms);
+		else
+		{
+			PlayerWidget->SetNumberOfGhosts(1);
+		}
+
+		NewestGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
+		NewestGhost->SetTransformsToFollow(RecordedTransforms);
 
 		RecordedTransforms.Empty();
-
+		if (PlayerWidget)
+			PlayerWidget->SetProgressBarPercentage(0);
 	}
 }
 
 void AMyCharacter::RemoveGhosts()
 {
-	if(OldGhost)
-		OldGhost->Destroy();
-	if(NewGhost)
-		NewGhost->Destroy();
-	UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] RemoveGhosts: Ghosts emptied!"));
+	if (OldestGhost)
+		OldestGhost->Destroy();
+	if (NewestGhost)
+		NewestGhost->Destroy();
+
+	PlayerWidget->SetNumberOfGhosts(0);
+	//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] RemoveGhosts: Ghosts emptied!"));
 
 }
+
+void AMyCharacter::MoveForward(float value)
+{
+	AddMovementInput(GetActorForwardVector(), MovementSpeed * value);
+}
+
+void AMyCharacter::MoveRight(float value)
+{
+	AddControllerYawInput(value);
+}
+
+void AMyCharacter::RotateCamera(float value)
+{
+	SpringArm->AddRelativeRotation(FRotator(0, value, 0));
+}
+
 

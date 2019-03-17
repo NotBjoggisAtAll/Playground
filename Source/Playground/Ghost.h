@@ -22,7 +22,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void SetTransform(TArray<FTransform> inTransforms) { TransformsToFollow = inTransforms; }
+	void SetTransformsToFollow(TArray<FTransform> inTransforms) { TransformsToFollow = inTransforms; }
 
 	UPROPERTY(VisibleAnywhere)
 	class UCapsuleComponent* Capsule = nullptr;

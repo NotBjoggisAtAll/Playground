@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+class UGhostPlayerWidget;
+
 UCLASS()
 class PLAYGROUND_API AMyCharacter : public ACharacter
 {
@@ -35,24 +37,29 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AGhost> GhostClass;
+	
+	void SetPlayerWidget(UGhostPlayerWidget* widgetIn) { PlayerWidget = widgetIn; }
 private:
-	void MoveForward(float value);
-	void MoveRight(float value);
-	void RotateCamera(float value); 
 	void StartRecording();
 	void StopRecording();
 	void RemoveGhosts();
 
-	class AGhost* NewGhost = nullptr;
-	class AGhost* OldGhost = nullptr;
+	void MoveForward(float value);
+	void MoveRight(float value);
+	void RotateCamera(float value); 
+
+	class AGhost* NewestGhost = nullptr;
+	class AGhost* OldestGhost = nullptr;
 	TArray<FTransform> RecordedTransforms;
 	FTimerHandle TH_RecordingTimer;
-	bool bIsRecording = false;
 
+	bool bIsRecording = false;
 	// ** Values ** //
 	float MovementSpeed = 2;
 	float MaxRecordedTime = 10.f;
 	int MaxNumOfGhosts = 3;
+
+	UGhostPlayerWidget* PlayerWidget;
 
 
 
