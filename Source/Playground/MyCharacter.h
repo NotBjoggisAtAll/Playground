@@ -41,13 +41,16 @@ private:
 	void RotateCamera(float value); 
 	void StartRecording();
 	void StopRecording();
+	void RemoveGhosts();
 
+	TArray<class AGhost*> Ghosts;
 	TArray<FTransform> RecordedTransforms;
 	FTimerHandle TH_RecordingTimer;
 	bool bIsRecording = false;
 	// ** Values ** //
 	float MovementSpeed = 2;
 	float MaxRecordedTime = 10.f;
+	int MaxNumOfGhosts = 3;
 
 
 

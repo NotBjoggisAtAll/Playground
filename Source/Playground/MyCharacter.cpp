@@ -53,6 +53,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("RotateCamera", this, &AMyCharacter::RotateCamera);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::Jump);
 	PlayerInputComponent->BindAction("StartRecording", IE_Pressed, this, &AMyCharacter::StartRecording);
+	PlayerInputComponent->BindAction("RemoveGhosts", IE_Pressed, this, &AMyCharacter::RemoveGhosts);
 }
 
 void AMyCharacter::MoveForward(float value)
@@ -73,7 +74,7 @@ void AMyCharacter::RotateCamera(float value)
 
 void AMyCharacter::StartRecording()
 {
-	if (!bIsRecording)
+	if (!bIsRecording && (Ghosts.Num() < MaxNumOfGhosts))
 	{
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
@@ -82,6 +83,7 @@ void AMyCharacter::StartRecording()
 	else
 	{
 		StopRecording();
+		GetWorld()->GetTimerManager().ClearTimer(TH_RecordingTimer);
 	}
 }
 
@@ -93,7 +95,18 @@ void AMyCharacter::StopRecording()
 		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
 		AGhost* NewGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
 		NewGhost->SetTransform(RecordedTransforms);
+		Ghosts.Add(NewGhost);
 		RecordedTransforms.Empty();
+
 	}
+}
+
+void AMyCharacter::RemoveGhosts()
+{
+	for (auto& g : Ghosts)
+		g->bAutoDestroyWhenFinished = true; //is this a good way to destroy these? it seems to work
+	Ghosts.Empty();
+	UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] RemoveGhosts: Ghosts emptied!"));
+
 }
 
