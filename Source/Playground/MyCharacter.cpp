@@ -10,8 +10,6 @@
 #include "Ghost.h"
 #include "GhostPlayerWidget.h"
 
-
-
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -30,6 +28,15 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	StartLocation = GetActorLocation();
+	StartRotation = GetActorRotation();
+}
+
+void AMyCharacter::FellOutOfWorld(const UDamageType & dmgType)
+{
+	SetActorLocationAndRotation(StartLocation, StartRotation); //TODO Finne ut hvorfor rotation ikke funker.
+	StopRecording();
 }
 
 // Called every frame
@@ -43,7 +50,7 @@ void AMyCharacter::Tick(float DeltaTime)
 		float UsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(TH_RecordingTimer);
 		if (PlayerWidget)
 		{
-			PlayerWidget->SetProgressBarPercentage(UsedTime/MaxRecordedTime);
+			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
 			UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting Progress Bar Percentage!"));
 		}
 	}
@@ -135,5 +142,3 @@ void AMyCharacter::RotateCamera(float value)
 {
 	SpringArm->AddRelativeRotation(FRotator(0, value, 0));
 }
-
-
