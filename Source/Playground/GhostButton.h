@@ -30,6 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void UpdateButtonPosition(FVector NewPosition);
 
+	bool IsPressed() const { return bIsPushedDown; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

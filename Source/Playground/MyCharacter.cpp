@@ -16,7 +16,6 @@ AMyCharacter::AMyCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 
@@ -45,13 +44,12 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (bIsRecording)
 	{
-
 		RecordedTransforms.Add(GetTransform());
 		float UsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(TH_RecordingTimer);
 		if (PlayerWidget)
 		{
 			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
-			UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting Progress Bar Percentage!"));
+			//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting Progress Bar Percentage!"));
 		}
 	}
 }
@@ -76,7 +74,6 @@ void AMyCharacter::StartRecording()
 	{
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
-		//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Start Recording: Recording starts!"));
 	}
 	else
 	{
@@ -94,13 +91,10 @@ void AMyCharacter::StopRecording()
 		if (NewestGhost)
 		{
 			if (OldestGhost)
-			{
 				OldestGhost->Destroy();
-
-			}
+			
 			OldestGhost = NewestGhost;
 			PlayerWidget->SetNumberOfGhosts(2);
-
 		}
 		else
 		{
@@ -118,14 +112,13 @@ void AMyCharacter::StopRecording()
 
 void AMyCharacter::RemoveGhosts()
 {
+	StopRecording();
 	if (OldestGhost)
 		OldestGhost->Destroy();
 	if (NewestGhost)
 		NewestGhost->Destroy();
 
 	PlayerWidget->SetNumberOfGhosts(0);
-	//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] RemoveGhosts: Ghosts emptied!"));
-
 }
 
 void AMyCharacter::MoveForward(float value)

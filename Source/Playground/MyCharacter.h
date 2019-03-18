@@ -14,9 +14,17 @@ class PLAYGROUND_API AMyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+
 	AMyCharacter();
 
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AGhost> GhostClass;
+
+	void SetPlayerWidget(UGhostPlayerWidget* widgetIn) { PlayerWidget = widgetIn; }
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class USpringArmComponent* SpringArm;
 
@@ -29,18 +37,6 @@ protected:
 
 	virtual void FellOutOfWorld(const class UDamageType & dmgType) override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AGhost> GhostClass;
-	
-	void SetPlayerWidget(UGhostPlayerWidget* widgetIn) { PlayerWidget = widgetIn; }
 private:
 	// ** Functions ** //
 
