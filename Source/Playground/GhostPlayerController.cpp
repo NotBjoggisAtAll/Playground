@@ -5,10 +5,7 @@
 #include "MyCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
-AGhostPlayerController::AGhostPlayerController()
-{
-
-}
+AGhostPlayerController::AGhostPlayerController() {}
 
 void AGhostPlayerController::BeginPlay()
 {
@@ -23,5 +20,5 @@ void AGhostPlayerController::BeginPlay()
 		player->SetPlayerWidget(PlayerWidget);
 	}
 	
-
+	SetInputMode(FInputModeGameOnly());
 }

@@ -92,7 +92,7 @@ void AMyCharacter::StopRecording()
 		{
 			if (OldestGhost)
 				OldestGhost->Destroy();
-			
+
 			OldestGhost = NewestGhost;
 			PlayerWidget->SetNumberOfGhosts(2);
 		}
@@ -114,9 +114,15 @@ void AMyCharacter::RemoveGhosts()
 {
 	StopRecording();
 	if (OldestGhost)
+	{
 		OldestGhost->Destroy();
+		OldestGhost = nullptr;
+	}
 	if (NewestGhost)
+	{
 		NewestGhost->Destroy();
+		NewestGhost = nullptr;
+	}
 
 	PlayerWidget->SetNumberOfGhosts(0);
 }
