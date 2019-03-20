@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyCharacter.h"
-#include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
@@ -49,24 +48,9 @@ void AMyCharacter::Tick(float DeltaTime)
 		if (PlayerWidget)
 		{
 			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
-			//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting Progress Bar Percentage!"));
 		}
 	}
 }
-
-// Called to bind functionality to input
-void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("RotateCamera", this, &AMyCharacter::RotateCamera);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyCharacter::Jump);
-	PlayerInputComponent->BindAction("StartRecording", IE_Pressed, this, &AMyCharacter::StartRecording);
-	PlayerInputComponent->BindAction("RemoveGhosts", IE_Pressed, this, &AMyCharacter::RemoveGhosts);
-}
-
 
 void AMyCharacter::StartRecording()
 {

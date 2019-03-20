@@ -21,10 +21,30 @@ public:
 	AGhostPlayerController();
 
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
-	UGhostPlayerWidget* PlayerWidget;
+private:
+
+	// ** Functions ** //
+	void MoveRight(float value);
+
+	void RotateCamera(float value);
+
+	void RemoveGhosts();
+
+	void MoveForward(float value);
+
+	void Jump();
+
+	void StartRecording();
+
+	// ** Variables ** //
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGhostPlayerWidget> PlayerWidgetType;
+
+	UGhostPlayerWidget* PlayerWidget = nullptr;
+
+	class AMyCharacter* player = nullptr;
 
 };
