@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
+
+#include "MyCharacter.h"
 #include "Ghost.generated.h"
 
+
+
 UCLASS()
-class PLAYGROUND_API AGhost : public AActor
+class PLAYGROUND_API AGhost : public ACharacter
 {
 	GENERATED_BODY()
 	
@@ -22,12 +26,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void SetTransformsToFollow(TArray<FTransform> inTransforms) { TransformsToFollow = inTransforms; }
+	//void SetTransformsToFollow(TArray<FTransform> inTransforms) { TransformsToFollow = inTransforms; }
+	void SetInitialTransform(FTransform inTransforms) { InitialTransform = inTransforms; }
+	void SetInputsToFollow(TArray<FMovementOrder> inInputs) { RecordedInputs = inInputs; }
 
-	UPROPERTY(VisibleAnywhere)
-	class UCapsuleComponent* Capsule = nullptr;
 private:
+	int MovementSpeed = 2;
 	int CurrentTransform = 0;
-	TArray<FTransform> TransformsToFollow;
+	FTransform InitialTransform;
+	//TArray<FTransform> TransformsToFollow;
+	TArray<FMovementOrder> RecordedInputs;
 
 };

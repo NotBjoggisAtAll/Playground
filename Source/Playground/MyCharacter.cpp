@@ -5,7 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Public/TimerManager.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "Ghost.h"
 #include "GhostPlayerWidget.h"
 
@@ -29,6 +29,7 @@ void AMyCharacter::BeginPlay()
 
 	StartLocation = GetActorLocation();
 	StartRotation = GetActorRotation();
+	
 }
 
 void AMyCharacter::FellOutOfWorld(const UDamageType & dmgType)
@@ -41,14 +42,36 @@ void AMyCharacter::FellOutOfWorld(const UDamageType & dmgType)
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//Jump();
 	if (bIsRecording)
 	{
-		RecordedTransforms.Add(GetTransform());
+		if (bIsFirstRecordedFrame)
+		{
+			RecordingStartTransform = GetTransform();
+			bIsFirstRecordedFrame = false;
+		}
+		//RecordedTransforms.Add(GetTransform());
 		float UsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(TH_RecordingTimer);
 		if (PlayerWidget)
 		{
 			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
 		}
+		RecordedInputs.Add(FMovementOrder{UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveForward"), UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveRight"),false });
+
+	}
+	else
+	{
+
+		if (Increment < RecordedInputs.Num())
+		{
+
+			UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting input!"));
+			AddMovementInput(GetActorForwardVector(), MovementSpeed * RecordedInputs[Increment].MoveForwardValue);
+			AddControllerYawInput(RecordedInputs[Increment].MoveRightValue);
+			Increment++;
+		}
+		else
+			Increment = 0;
 	}
 }
 
@@ -56,6 +79,8 @@ void AMyCharacter::StartRecording()
 {
 	if (!bIsRecording)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] start Recording: Recording starts!"));
+
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
 	}
@@ -70,8 +95,9 @@ void AMyCharacter::StopRecording()
 {
 	if (bIsRecording)
 	{
+		bIsFirstRecordedFrame = true;
 		bIsRecording = false;
-		//UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
+		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
 		if (NewestGhost)
 		{
 			if (OldestGhost)
@@ -86,9 +112,14 @@ void AMyCharacter::StopRecording()
 		}
 
 		NewestGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
-		NewestGhost->SetTransformsToFollow(RecordedTransforms);
+		NewestGhost->SetInitialTransform(RecordingStartTransform);
 
-		RecordedTransforms.Empty();
+		//NewestGhost->SetTransformsToFollow(RecordedTransforms);
+		NewestGhost->SetInputsToFollow(RecordedInputs);
+
+		//RecordedTransforms.Empty();
+		RecordedInputs.Empty();
+
 		if (PlayerWidget)
 			PlayerWidget->SetProgressBarPercentage(0);
 	}

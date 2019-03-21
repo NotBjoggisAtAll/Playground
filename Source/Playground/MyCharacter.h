@@ -8,6 +8,21 @@
 
 class UGhostPlayerWidget;
 
+USTRUCT()
+struct FMovementOrder
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	float MoveForwardValue;
+
+	UPROPERTY()
+	float MoveRightValue;
+
+	UPROPERTY()
+	bool Jump = false;
+};
+
 UCLASS()
 class PLAYGROUND_API AMyCharacter : public ACharacter
 {
@@ -47,24 +62,28 @@ private:
 	// ** Functions ** //
 	void StopRecording();
 
-	class AGhost* NewestGhost = nullptr;
-	class AGhost* OldestGhost = nullptr;
-	TArray<FTransform> RecordedTransforms;
-	FTimerHandle TH_RecordingTimer;
 
 
 	// ** Variables ** //
 
+	class AGhost* NewestGhost = nullptr;
+	class AGhost* OldestGhost = nullptr;
+	//TArray<FTransform> RecordedTransforms;
+	TArray<FMovementOrder> RecordedInputs;
+	FTimerHandle TH_RecordingTimer;
+
 	FVector StartLocation;
 	FRotator StartRotation;
+
+	FTransform RecordingStartTransform;
+	bool bIsFirstRecordedFrame = true;
 
 	float MovementSpeed = 2;
 	float MaxRecordedTime = 10.f;
 	int MaxNumOfGhosts = 3;
 
 	bool bIsRecording = false;
-	UGhostPlayerWidget* PlayerWidget;
+	UGhostPlayerWidget* PlayerWidget = nullptr;
 
-
-
+	int Increment = 0;
 };

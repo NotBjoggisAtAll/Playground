@@ -37,6 +37,8 @@ void AGhostPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AGhostPlayerController::Jump);
 	InputComponent->BindAction("StartRecording", IE_Pressed, this, &AGhostPlayerController::StartRecording);
 	InputComponent->BindAction("RemoveGhosts", IE_Pressed, this, &AGhostPlayerController::RemoveGhosts);
+
+
 }
 
 void AGhostPlayerController::MoveRight(float value)
