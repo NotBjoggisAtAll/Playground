@@ -6,6 +6,8 @@
 #include "Engine/World.h"
 #include "Public/TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 #include "Ghost.h"
 #include "GhostPlayerWidget.h"
 
@@ -56,22 +58,8 @@ void AMyCharacter::Tick(float DeltaTime)
 		{
 			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
 		}
-		RecordedInputs.Add(FMovementOrder{UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveForward"), UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveRight"),false });
+		RecordedInputs.Add(FMovementOrder{UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveForward"), GetActorRotation(),GetMovementComponent()->IsFalling()});
 
-	}
-	else
-	{
-
-		if (Increment < RecordedInputs.Num())
-		{
-
-			UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Tick: Setting input!"));
-			AddMovementInput(GetActorForwardVector(), MovementSpeed * RecordedInputs[Increment].MoveForwardValue);
-			AddControllerYawInput(RecordedInputs[Increment].MoveRightValue);
-			Increment++;
-		}
-		else
-			Increment = 0;
 	}
 }
 

@@ -17,7 +17,7 @@ struct FMovementOrder
 	float MoveForwardValue;
 
 	UPROPERTY()
-	float MoveRightValue;
+	FRotator Rotation;
 
 	UPROPERTY()
 	bool Jump = false;
