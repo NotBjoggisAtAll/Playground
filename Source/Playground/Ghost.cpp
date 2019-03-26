@@ -3,6 +3,9 @@
 #include "Ghost.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
+#include "MyCharacter.h"
 // Sets default values
 AGhost::AGhost()
 {
@@ -15,8 +18,13 @@ AGhost::AGhost()
 void AGhost::BeginPlay()
 {
 	Super::BeginPlay();
+	Player = Cast<AMyCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 	
+	if (Player)
+		Player->IncrementTotalGhosts();
 }
+	
+
 
 // Called every frame
 void AGhost::Tick(float DeltaTime)
@@ -29,7 +37,7 @@ void AGhost::Tick(float DeltaTime)
 	}
 	if (CurrentTransform < RecordedInputs.Num() - 1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Setting input! %f"), RecordedInputs[CurrentTransform].MoveForwardValue);
+		//UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Setting input! %f"), RecordedInputs[CurrentTransform].MoveForwardValue);
 		//SetActorTransform(TransformsToFollow[CurrentTransform]);
 		//UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Adding input"));
 		if (RecordedInputs[CurrentTransform].Jump)
@@ -45,3 +53,8 @@ void AGhost::Tick(float DeltaTime)
 
 }
 
+void AGhost::Destroyed()
+{
+	if (Player)
+		Player->DecrementTotalGhosts();
+}

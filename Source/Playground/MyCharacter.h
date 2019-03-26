@@ -51,6 +51,10 @@ public:
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void RotateCamera(float value);
+
+	void DecrementTotalGhosts();
+
+	void IncrementTotalGhosts();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -62,6 +66,8 @@ private:
 	// ** Functions ** //
 	void StopRecording();
 
+
+	UGhostPlayerWidget* PlayerWidget = nullptr;
 
 
 	// ** Variables ** //
@@ -83,7 +89,6 @@ private:
 	int MaxNumOfGhosts = 3;
 
 	bool bIsRecording = false;
-	UGhostPlayerWidget* PlayerWidget = nullptr;
 
 	int Increment = 0;
 };

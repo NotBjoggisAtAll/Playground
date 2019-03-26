@@ -92,11 +92,6 @@ void AMyCharacter::StopRecording()
 				OldestGhost->Destroy();
 
 			OldestGhost = NewestGhost;
-			PlayerWidget->SetNumberOfGhosts(2);
-		}
-		else
-		{
-			PlayerWidget->SetNumberOfGhosts(1);
 		}
 
 		NewestGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
@@ -115,6 +110,21 @@ void AMyCharacter::StopRecording()
 	}
 }
 
+void AMyCharacter::DecrementTotalGhosts()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AMyCharacter] DecrementTotalGhosts: Fjerner 1"));
+
+	auto CurrentNumberOfGhosts = PlayerWidget->GetNumberOfGhosts();
+	PlayerWidget->SetNumberOfGhosts(CurrentNumberOfGhosts - 1);
+}
+
+void AMyCharacter::IncrementTotalGhosts()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[AMyCharacter] IncrementTotalGhosts: Legger til 1"));
+	int CurrentNumberOfGhosts = PlayerWidget->GetNumberOfGhosts();
+	PlayerWidget->SetNumberOfGhosts(CurrentNumberOfGhosts + 1);
+}
+
 void AMyCharacter::RemoveGhosts()
 {
 	StopRecording();
@@ -128,8 +138,6 @@ void AMyCharacter::RemoveGhosts()
 		NewestGhost->Destroy();
 		NewestGhost = nullptr;
 	}
-
-	PlayerWidget->SetNumberOfGhosts(0);
 }
 
 void AMyCharacter::MoveForward(float value)

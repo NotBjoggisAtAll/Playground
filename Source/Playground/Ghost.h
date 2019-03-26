@@ -9,6 +9,7 @@
 #include "Ghost.generated.h"
 
 
+class AMyCharacter;
 
 UCLASS()
 class PLAYGROUND_API AGhost : public ACharacter
@@ -31,10 +32,12 @@ public:
 	void SetInputsToFollow(TArray<FMovementOrder> inInputs) { RecordedInputs = inInputs; }
 
 private:
+	virtual void Destroyed() override;
 	int MovementSpeed = 2;
 	int CurrentTransform = 0;
 	FTransform InitialTransform;
 	//TArray<FTransform> TransformsToFollow;
 	TArray<FMovementOrder> RecordedInputs;
+	AMyCharacter* Player;
 
 };

@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* GhostCounterText;
+
+	int GetNumberOfGhosts() { return NumberOfGhosts; }
 private:
 
+	int NumberOfGhosts = 0;
 };
