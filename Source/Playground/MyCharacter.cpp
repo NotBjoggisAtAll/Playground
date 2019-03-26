@@ -38,6 +38,8 @@ void AMyCharacter::FellOutOfWorld(const UDamageType & dmgType)
 {
 	SetActorLocationAndRotation(StartLocation, StartRotation); //TODO Finne ut hvorfor rotation ikke funker.
 	StopRecording();
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->RestartLevel();
+
 }
 
 // Called every frame
