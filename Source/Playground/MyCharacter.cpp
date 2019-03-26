@@ -110,6 +110,8 @@ void AMyCharacter::StopRecording()
 
 		if (PlayerWidget)
 			PlayerWidget->SetProgressBarPercentage(0);
+
+		SetActorTransform(RecordingStartTransform);
 	}
 }
 
