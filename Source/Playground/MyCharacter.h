@@ -17,6 +17,9 @@ struct FMovementOrder
 	float MoveForwardValue;
 
 	UPROPERTY()
+	float MoveRightValue;
+
+	UPROPERTY()
 	FRotator Rotation;
 
 	UPROPERTY()

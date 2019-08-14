@@ -35,6 +35,7 @@ void AGhost::Tick(float DeltaTime)
 		if (RecordedInputs[CurrentTransform].Jump)
 			Jump();
 		AddMovementInput(GetActorForwardVector(), MovementSpeed * RecordedInputs[CurrentTransform].MoveForwardValue);
+		AddMovementInput(GetActorRightVector(), MovementSpeed * RecordedInputs[CurrentTransform].MoveRightValue);
 		SetActorRotation(RecordedInputs[CurrentTransform].Rotation);
 		CurrentTransform++;
 	}

@@ -58,7 +58,12 @@ void AMyCharacter::Tick(float DeltaTime)
 		{
 			PlayerWidget->SetProgressBarPercentage(UsedTime / MaxRecordedTime);
 		}
-		RecordedInputs.Add(FMovementOrder{UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveForward"), GetActorRotation(),GetMovementComponent()->IsFalling()});
+		RecordedInputs.Add(FMovementOrder{
+			UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveForward"),
+			UGameplayStatics::GetPlayerController(GetWorld(), 0)->InputComponent->GetAxisValue("MoveRight"),
+			GetActorRotation(),
+			GetMovementComponent()->IsFalling()
+			});
 
 	}
 }
@@ -139,10 +144,11 @@ void AMyCharacter::MoveForward(float value)
 
 void AMyCharacter::MoveRight(float value)
 {
-	AddControllerYawInput(value);
+	AddMovementInput(GetActorRightVector(), MovementSpeed * value);
 }
 
 void AMyCharacter::RotateCamera(float value)
 {
-	SpringArm->AddRelativeRotation(FRotator(0, value, 0));
+		AddControllerYawInput(value * 0.3);
+	//	SpringArm->AddRelativeRotation(FRotator(0, value * 0.1, 0));
 }
