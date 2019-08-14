@@ -44,7 +44,6 @@ void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//Jump();
 	if (bIsRecording)
 	{
 		if (bIsFirstRecordedFrame)
@@ -52,7 +51,6 @@ void AMyCharacter::Tick(float DeltaTime)
 			RecordingStartTransform = GetTransform();
 			bIsFirstRecordedFrame = false;
 		}
-		//RecordedTransforms.Add(GetTransform());
 		float UsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(TH_RecordingTimer);
 		if (PlayerWidget)
 		{
@@ -64,7 +62,6 @@ void AMyCharacter::Tick(float DeltaTime)
 			GetActorRotation(),
 			GetMovementComponent()->IsFalling()
 			});
-
 	}
 }
 
@@ -72,8 +69,6 @@ void AMyCharacter::StartRecording()
 {
 	if (!bIsRecording)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] start Recording: Recording starts!"));
-
 		bIsRecording = true;
 		GetWorld()->GetTimerManager().SetTimer(TH_RecordingTimer, this, &AMyCharacter::StopRecording, MaxRecordedTime, false);
 	}
@@ -90,8 +85,6 @@ void AMyCharacter::StopRecording()
 	{
 		bIsFirstRecordedFrame = true;
 		bIsRecording = false;
-		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
-
 
 		auto Ghost = GetWorld()->SpawnActor<AGhost>(GhostClass);
 		Ghost->SetInitialTransform(RecordingStartTransform);
@@ -110,11 +103,11 @@ void AMyCharacter::StopRecording()
 			OldGhost->Destroy();
 			Ghosts.Enqueue(Ghost);
 		}
-		else {
+		else
+		{
 			Ghosts.Enqueue(Ghost);
 			IncrementNumberOfGhosts();
 		}
-
 	}
 }
 

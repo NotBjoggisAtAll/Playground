@@ -43,8 +43,11 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGhostPlayerWidget> PlayerWidgetType;
 
-	UGhostPlayerWidget* PlayerWidget = nullptr;
 
 	class AMyCharacter* player = nullptr;
 
+protected:
+
+	UPROPERTY(BlueprintReadWrite)
+	UGhostPlayerWidget* PlayerWidget = nullptr;
 };

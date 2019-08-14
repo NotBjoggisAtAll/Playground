@@ -4,34 +4,27 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-// Sets default values
+
 AGhost::AGhost()
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AGhost::BeginPlay()
 {
-	ReferenceToMyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	Super::BeginPlay();
-
+	ReferenceToMyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
-// Called every frame
 void AGhost::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (CurrentTransform == 0)
-	{ 
-		//UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Setting initial Transform"));
+	{
 		SetActorTransform(InitialTransform);
 	}
 	if (CurrentTransform < RecordedInputs.Num() - 1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Setting input! %f"), RecordedInputs[CurrentTransform].MoveForwardValue);
-		//SetActorTransform(TransformsToFollow[CurrentTransform]);
-		//UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: Adding input"));
 		if (RecordedInputs[CurrentTransform].Jump)
 			Jump();
 		AddMovementInput(GetActorForwardVector(), MovementSpeed * RecordedInputs[CurrentTransform].MoveForwardValue);
@@ -41,8 +34,4 @@ void AGhost::Tick(float DeltaTime)
 	}
 	else
 		CurrentTransform = 0;
-	//UE_LOG(LogTemp, Warning, TEXT("[AGhost] Tick: input length" %f), );
-
-
 }
-

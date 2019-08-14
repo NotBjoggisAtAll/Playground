@@ -8,38 +8,27 @@
 #include "MyCharacter.h"
 #include "Ghost.generated.h"
 
-
-
 UCLASS()
 class PLAYGROUND_API AGhost : public ACharacter
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AGhost();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	//void SetTransformsToFollow(TArray<FTransform> inTransforms) { TransformsToFollow = inTransforms; }
 	void SetInitialTransform(FTransform inTransforms) { InitialTransform = inTransforms; }
 	void SetInputsToFollow(TArray<FMovementOrder> inInputs) { RecordedInputs = inInputs; }
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+	AMyCharacter* ReferenceToMyCharacter = nullptr;
 
 private:
 	int MovementSpeed = 2;
 	int CurrentTransform = 0;
 	FTransform InitialTransform;
-	//TArray<FTransform> TransformsToFollow;
 	TArray<FMovementOrder> RecordedInputs;
-	
-protected:
-
-	UPROPERTY(BlueprintReadOnly, Category = "References")
-	AMyCharacter* ReferenceToMyCharacter = nullptr;
-
 };
