@@ -3,19 +3,19 @@
 #include "Ghost.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 AGhost::AGhost()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	//SpawnDefaultController();
-	//GetCharacterMovementComponent()->bRunPhysicsWithNoController = true;
 }
 
 // Called when the game starts or when spawned
 void AGhost::BeginPlay()
 {
+	ReferenceToMyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

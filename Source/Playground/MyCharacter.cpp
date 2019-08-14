@@ -31,10 +31,10 @@ void AMyCharacter::BeginPlay()
 
 	StartLocation = GetActorLocation();
 	StartRotation = GetActorRotation();
-	
+
 }
 
-void AMyCharacter::FellOutOfWorld(const UDamageType & dmgType)
+void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
 {
 	SetActorLocationAndRotation(StartLocation, StartRotation); //TODO Finne ut hvorfor rotation ikke funker.
 	StopRecording();
@@ -91,50 +91,64 @@ void AMyCharacter::StopRecording()
 		bIsFirstRecordedFrame = true;
 		bIsRecording = false;
 		UE_LOG(LogTemp, Warning, TEXT("[MyCharacter] Stop Recording: Recording stops!"));
-		if (NewestGhost)
-		{
-			if (OldestGhost)
-				OldestGhost->Destroy();
 
-			OldestGhost = NewestGhost;
-			PlayerWidget->SetNumberOfGhosts(2);
-		}
-		else
-		{
-			PlayerWidget->SetNumberOfGhosts(1);
-		}
 
-		NewestGhost = GetWorld()->SpawnActor<AGhost>(GhostClass);
-		NewestGhost->SetInitialTransform(RecordingStartTransform);
-
-		//NewestGhost->SetTransformsToFollow(RecordedTransforms);
-		NewestGhost->SetInputsToFollow(RecordedInputs);
-
-		//RecordedTransforms.Empty();
+		auto Ghost = GetWorld()->SpawnActor<AGhost>(GhostClass);
+		Ghost->SetInitialTransform(RecordingStartTransform);
+		Ghost->SetInputsToFollow(RecordedInputs);
 		RecordedInputs.Empty();
 
 		if (PlayerWidget)
 			PlayerWidget->SetProgressBarPercentage(0);
 
 		SetActorTransform(RecordingStartTransform);
+
+		if (GhostsQueueSize == 2)
+		{
+			AGhost* OldGhost = nullptr;
+			Ghosts.Dequeue(OldGhost);
+			OldGhost->Destroy();
+			Ghosts.Enqueue(Ghost);
+		}
+		else {
+			Ghosts.Enqueue(Ghost);
+			IncrementNumberOfGhosts();
+		}
+
+	}
+}
+
+void AMyCharacter::IncrementNumberOfGhosts()
+{
+	PlayerWidget->SetNumberOfGhosts(++GhostsQueueSize);
+}
+
+void AMyCharacter::DecrementNumberOfGhosts()
+{
+	PlayerWidget->SetNumberOfGhosts(--GhostsQueueSize);
+}
+
+void AMyCharacter::ResetGhostsQueue()
+{
+	AGhost* GhostToDelete = nullptr;
+	if (Ghosts.IsEmpty())
+	{
+		GhostsQueueSize = 0;
+		PlayerWidget->SetNumberOfGhosts(GhostsQueueSize);
+		return;
+	}
+	if (Ghosts.Dequeue(GhostToDelete))
+	{
+		GhostToDelete->Destroy();
+		GhostToDelete = nullptr;
+		ResetGhostsQueue();
 	}
 }
 
 void AMyCharacter::RemoveGhosts()
 {
 	StopRecording();
-	if (OldestGhost)
-	{
-		OldestGhost->Destroy();
-		OldestGhost = nullptr;
-	}
-	if (NewestGhost)
-	{
-		NewestGhost->Destroy();
-		NewestGhost = nullptr;
-	}
-
-	PlayerWidget->SetNumberOfGhosts(0);
+	ResetGhostsQueue();
 }
 
 void AMyCharacter::MoveForward(float value)
@@ -149,6 +163,6 @@ void AMyCharacter::MoveRight(float value)
 
 void AMyCharacter::RotateCamera(float value)
 {
-		AddControllerYawInput(value * 0.3);
+	AddControllerYawInput(value * 0.3);
 	//	SpringArm->AddRelativeRotation(FRotator(0, value * 0.1, 0));
 }

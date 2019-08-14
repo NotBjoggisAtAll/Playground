@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/Queue.h"
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
@@ -60,18 +61,23 @@ protected:
 
 	virtual void FellOutOfWorld(const class UDamageType & dmgType) override;
 
-
 private:
 	// ** Functions ** //
 	void StopRecording();
 
+	void IncrementNumberOfGhosts();
+
+	void DecrementNumberOfGhosts();
+
+	void ResetGhostsQueue();
 
 
 	// ** Variables ** //
 
-	class AGhost* NewestGhost = nullptr;
-	class AGhost* OldestGhost = nullptr;
-	//TArray<FTransform> RecordedTransforms;
+	TQueue<AGhost*> Ghosts;
+	// Keeps track of the current amount of ghosts. Can be changed outside if the player class
+	int GhostsQueueSize = 0;
+
 	TArray<FMovementOrder> RecordedInputs;
 	FTimerHandle TH_RecordingTimer;
 
@@ -87,6 +93,4 @@ private:
 
 	bool bIsRecording = false;
 	UGhostPlayerWidget* PlayerWidget = nullptr;
-
-	int Increment = 0;
 };

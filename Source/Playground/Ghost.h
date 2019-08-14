@@ -36,5 +36,10 @@ private:
 	FTransform InitialTransform;
 	//TArray<FTransform> TransformsToFollow;
 	TArray<FMovementOrder> RecordedInputs;
+	
+protected:
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+	AMyCharacter* ReferenceToMyCharacter = nullptr;
 
 };
