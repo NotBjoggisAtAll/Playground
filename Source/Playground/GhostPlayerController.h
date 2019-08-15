@@ -6,9 +6,6 @@
 #include "GameFramework/PlayerController.h"
 #include "GhostPlayerController.generated.h"
 
-/**
- * 
- */
 
 class UGhostPlayerWidget;
 
@@ -20,11 +17,17 @@ class PLAYGROUND_API AGhostPlayerController : public APlayerController
 public:
 	AGhostPlayerController();
 
+protected:
+	// ** Functions ** //
+
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-private:
+	// ** Variables ** //
 
+	UPROPERTY(BlueprintReadWrite)
+		UGhostPlayerWidget* PlayerWidget = nullptr;
+private:
 	// ** Functions ** //
 	void MoveRight(float value);
 
@@ -41,13 +44,8 @@ private:
 	// ** Variables ** //
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGhostPlayerWidget> PlayerWidgetType;
+		TSubclassOf<UGhostPlayerWidget> PlayerWidgetType;
 
+	class AMyCharacter* ReferenceToPlayer = nullptr;
 
-	class AMyCharacter* player = nullptr;
-
-protected:
-
-	UPROPERTY(BlueprintReadWrite)
-	UGhostPlayerWidget* PlayerWidget = nullptr;
 };

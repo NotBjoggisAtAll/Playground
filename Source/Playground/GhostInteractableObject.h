@@ -23,7 +23,7 @@ public:
 	void OnButtonsReleased();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateObjectPosition(FVector NewPosition);
+	void UpdateObjectPosition(UStaticMeshComponent* Mesh,FVector NewPosition);
 
 protected:
 	// Called when the game starts or when spawned

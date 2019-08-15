@@ -7,20 +7,18 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-
 AGhostPlayerController::AGhostPlayerController() {}
 
 void AGhostPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerWidget = CreateWidget<UGhostPlayerWidget>(this, PlayerWidgetType);
-
 	PlayerWidget->AddToViewport();
 
-	player = Cast<AMyCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	if (player)
+	ReferenceToPlayer = Cast<AMyCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (ReferenceToPlayer)
 	{
-		player->SetPlayerWidget(PlayerWidget);
+		ReferenceToPlayer->SetPlayerWidget(PlayerWidget);
 	}
 	
 	SetInputMode(FInputModeGameOnly());
@@ -38,34 +36,33 @@ void AGhostPlayerController::SetupInputComponent()
 	InputComponent->BindAction("StartRecording", IE_Pressed, this, &AGhostPlayerController::StartRecording);
 	InputComponent->BindAction("RemoveGhosts", IE_Pressed, this, &AGhostPlayerController::RemoveGhosts);
 
-
 }
 
 void AGhostPlayerController::MoveRight(float value)
 {
-	player->MoveRight(value);
+	ReferenceToPlayer->MoveRight(value);
 }
 
 void AGhostPlayerController::RotateCamera(float value)
 {
-	player->RotateCamera(value);
+	ReferenceToPlayer->RotateCamera(value);
 }
 
 void AGhostPlayerController::RemoveGhosts()
 {
-	player->RemoveGhosts();
+	ReferenceToPlayer->RemoveGhosts();
 }
 
 void AGhostPlayerController::MoveForward(float value)
 {
-	player->MoveForward(value);
+	ReferenceToPlayer->MoveForward(value);
 }
 void AGhostPlayerController::Jump()
 {
-	player->Jump();
+	ReferenceToPlayer->Jump();
 }
 
 void AGhostPlayerController::StartRecording()
 {
-	player->StartRecording();
+	ReferenceToPlayer->StartRecording();
 }

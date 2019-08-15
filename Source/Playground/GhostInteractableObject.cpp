@@ -2,6 +2,7 @@
 
 #include "GhostInteractableObject.h"
 #include "GhostButton.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AGhostInteractableObject::AGhostInteractableObject()
@@ -37,9 +38,10 @@ void AGhostInteractableObject::Tick(float DeltaTime)
 		OnButtonsReleased();
 }
 
-void AGhostInteractableObject::UpdateObjectPosition(FVector NewPosition)
+void AGhostInteractableObject::UpdateObjectPosition(UStaticMeshComponent* Mesh, FVector NewPosition)
 {
+	if (!Mesh) { return; }
 	FVector NewVector = StartPosition + NewPosition;
-	SetActorLocation(NewVector);
+	Mesh->SetWorldLocation(NewVector);
 }
 
