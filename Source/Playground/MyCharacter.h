@@ -36,7 +36,6 @@ public:
 
 	AMyCharacter();
 
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AGhost> GhostClass;
@@ -56,10 +55,13 @@ public:
 	void MoveRight(float value);
 	void RotateCamera(float value);
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	virtual void FellOutOfWorld(const class UDamageType & dmgType) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+	void HandleFellOutOfWorld();
 
 private:
 	// ** Functions ** //
