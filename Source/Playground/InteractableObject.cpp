@@ -51,12 +51,12 @@ void AInteractableObject::Tick(float DeltaTime)
 
 void AInteractableObject::Open()
 {
-	UE_LOG(LogTemp, Warning, TEXT("IS OPEN"));
+	UE_LOG(LogTemp, Warning, TEXT("[%s] is open"), *GetName());
 }
 
 void AInteractableObject::Closed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("IS CLOSE"));
+	UE_LOG(LogTemp, Warning, TEXT("[%s] is closed"), *GetName());
 }
 
 void AInteractableObject::UpdateMoveableObjectLocation(float Alpha)
