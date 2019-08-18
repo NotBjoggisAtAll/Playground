@@ -24,24 +24,13 @@ void AGhostInteractableObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	bool AllButtonsPressed = true;
-	for (auto& b : Buttons)
-	{
-		if (!b->IsPressed())
-		{
-			AllButtonsPressed = false;
-		}
-	}
-	if (AllButtonsPressed)
-		OnButtonsPressed();
-	else
-		OnButtonsReleased();
+
 }
 
 void AGhostInteractableObject::UpdateObjectPosition(UStaticMeshComponent* Mesh, FVector NewPosition)
 {
 	if (!Mesh) { return; }
 	FVector NewVector = StartPosition + NewPosition;
-	Mesh->SetWorldLocation(NewVector);
+	Mesh->SetWorldLocation(NewPosition);
 }
 
